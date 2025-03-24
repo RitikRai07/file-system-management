@@ -1,0 +1,145 @@
+#include <iostream>
+#include <fstream>
+#include <filesystem>
+
+using namespace std;
+namespace fs = filesystem;
+
+// Function to create a file
+void createFile(const string &filename) {
+    ofstream file(filename);
+    if (file) {
+        cout << "File created: " << filename << endl;
+        file.close();
+    } else {
+        cout << "Error creating file: " << filename << endl;
+    }
+}
+
+// Function to write to a file
+void writeFile(const string &filename) {
+    ofstream file(filename, ios::app);
+    if (file) {
+        string content;
+        cout << "Enter content to write to the file:\n";
+        cin.ignore();
+        getline(cin, content);
+        file << content << endl;
+        cout << "Content written to " << filename << endl;
+        file.close();
+    } else {
+        cout << "Error opening file for writing!" << endl;
+    }
+}
+
+// Function to read a file
+void readFile(const string &filename) {
+    ifstream file(filename);
+    if (file) {
+        string line;
+        cout << "Reading content of " << filename << ":\n";
+        while (getline(file, line)) {
+            cout << line << endl;
+        }
+        file.close();
+    } else {
+        cout << "Error opening file!" << endl;
+    }
+}
+
+// Function to delete a file
+void deleteFile(const string &filename) {
+    if (fs::remove(filename)) {
+        cout << "File deleted: " << filename << endl;
+    } else {
+        cout << "Error deleting file!" << endl;
+    }
+}
+
+// Function to create a directory
+void createDirectory(const string &dirname) {
+    if (fs::create_directory(dirname)) {
+        cout << "Directory created: " << dirname << endl;
+    } else {
+        cout << "Error creating directory!" << endl;
+    }
+}
+
+// Function to list files and directories
+void listFiles(const string &path = ".") {
+    cout << "Listing files and directories in " << path << ":\n";
+    for (const auto &entry : fs::directory_iterator(path)) {
+        cout << (entry.is_directory() ? "[DIR] " : "[FILE] ") << entry.path().filename() << endl;
+    }
+}
+
+// Function to delete a directory
+void deleteDirectory(const string &dirname) {
+    if (fs::remove_all(dirname)) {
+        cout << "Directory deleted: " << dirname << endl;
+    } else {
+        cout << "Error deleting directory!" << endl;
+    }
+}
+
+int main() {
+    int choice;
+    string name;
+
+    do {
+        cout << "\n--- FILE SYSTEM MANAGEMENT ---\n";
+        cout << "1. Create File\n";
+        cout << "2. Write to File\n";
+        cout << "3. Read File\n";
+        cout << "4. Delete File\n";
+        cout << "5. Create Directory\n";
+        cout << "6. List Files and Directories\n";
+        cout << "7. Delete Directory\n";
+        cout << "8. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter file name: ";
+                cin >> name;
+                createFile(name);
+                break;
+            case 2:
+                cout << "Enter file name: ";
+                cin >> name;
+                writeFile(name);
+                break;
+            case 3:
+                cout << "Enter file name: ";
+                cin >> name;
+                readFile(name);
+                break;
+            case 4:
+                cout << "Enter file name: ";
+                cin >> name;
+                deleteFile(name);
+                break;
+            case 5:
+                cout << "Enter directory name: ";
+                cin >> name;
+                createDirectory(name);
+                break;
+            case 6:
+                listFiles();
+                break;
+            case 7:
+                cout << "Enter directory name: ";
+                cin >> name;
+                deleteDirectory(name);
+                break;
+            case 8:
+                cout << "Exiting program.\n";
+                break;
+            default:
+                cout << "Invalid choice! Try again.\n";
+        }
+    } while (choice != 8);
+
+    return 0;
+}
